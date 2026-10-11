@@ -1,0 +1,30 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test portable core
+        run: ./scripts/one_click_check.sh
+
+  windows-asi:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test Windows ASI
+        shell: pwsh
+        run: ./scripts/one_click_check.ps1
+      - name: Upload ASI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SaiyanInTheOldWest-windows-x64
+          path: |
+            build/Release/SaiyanInTheOldWest.asi
+            build/Release/SaiyanInTheOldWest.ini
+          if-no-files-found: error
